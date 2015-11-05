@@ -1,0 +1,507 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>转换</title>
+<style type="text/css">
+body {
+font-family : 微软雅黑,黑体,楷体,serif;
+padding : 0;
+margin : 0;
+background-image : url(backgroundImage/haruhi.gif);
+}
+#dialog {
+position : absolute;
+top : 7%;
+left : 7%;
+height : 40%;
+width : 50%;
+}
+#speak {
+height : 30%;
+width : 35%;
+position : absolute;
+top : 17%;
+left : 15%;
+font-size : 25px;
+font-family : 微软雅黑,黑体,楷体,serif;
+font-weight : bold;
+}
+#zhuan {
+position : absolute;
+top : 47%;
+left : 12%;
+background-color : transparent;
+height : 5%;
+width : 20%;
+font-size : 30px;
+border : none;
+outline : none;
+border-bottom-style : solid;
+}
+#anniu{
+display : none;
+}
+#skip{
+border : none;
+background-color : transparent;
+position : absolute;
+z-index : 1;
+top : 27%;
+left : 40%;
+outline : none;
+width : 60px;
+height : 30px;
+font-family : 楷体,serif;
+font-size : 20px;
+text-decoration : underline;
+color : #707070;
+cursor : pointer;
+display : none;
+}
+#option{
+font-size : 20px;
+}
+#wordRoll{
+position : absolute;
+top : 60%;
+left : 12%;
+margin : 0;
+}
+#controlRoll{
+background-image : url(img/on.gif);
+position : absolute;
+top : 60.4%;
+left : 35%;
+cursor : pointer;
+z-index : 1;
+}
+#rollSpeed{
+position : absolute;
+top : 68%;
+left : 12%;
+margin : 0;
+}
+#controlSpeed{
+-webkit-appearance : none;
+position : absolute;
+top : 69.5%;
+left : 35%;
+cursor : pointer;
+z-index : 1;
+outline : none;
+background-color : transparent;
+width: 11.2%;
+}
+#controlSpeed::-webkit-slider-thumb {
+ -webkit-appearance: none;
+ height: 20px;
+ width: 20px;
+ background : #00fff6;
+  margin-top: -8.5px;
+  border-radius: 10px;
+}
+#controlSpeed::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 3px;
+  cursor: pointer;
+  background: #00fff6;
+}
+#leftChange{
+background : url(img/left.gif),transparent;
+height : 20px;
+width : 20px;
+border : none;
+outline : none;
+cursor : pointer;
+position : absolute;
+top : 76.4%;
+left : 35%;
+}
+#rightChange{
+background : url(img/right.gif),transparent;
+height : 20px;
+width : 20px;
+border : none;
+outline : none;
+cursor : pointer;
+position : absolute;
+top : 76.4%;
+left : 45%;
+}
+#bImage{
+position : absolute;
+top : 76%;
+left : 12%;
+margin : 0;
+}
+#imageName{
+position : absolute;
+top : 76.5%;
+left : 37%;
+margin : 0;
+height : 16px;
+width : 8%;
+font-size : 16px;
+text-align : center;
+}
+</style>
+</head>
+<body>
+<p id="speak">请在下面输入一个小于12位的正整数</p>
+<form>
+<input id="zhuan" type="text" autocomplete="off" autofocus="autofocus"/>
+<button id="anniu" onclick="reduce();roll(document.getElementById('speak').childNodes[0].nodeValue);return false"></button>
+<!--如果去掉"x=",则reduce()执行后因为全局变量x没有值,所以无法执行后面的haha()和return false,会激活onclick的默认行为,刷新页面-->
+<!--现在删掉了全局变量x,speak为参数传递值-->
+</form>
+<button id="skip" onclick="roll(999)">跳过</button>
+<div id="option">
+<p id="wordRoll">文字滚动</p>
+<img src="img/on.gif" id="controlRoll" name="1" onclick="CR();return false"/>
+<p id="rollSpeed">滚动速度</p>
+<input type="range" id="controlSpeed" value="-100" min="-1000" max="-100"/>
+<p id="bImage">背景图片</p>
+<input id="leftChange" name="0" type="button" onclick="left();return false"/>
+<p id="imageName">凉宫春日</p>
+<input id="rightChange" name="0" type="button" onclick="right();return false"/>
+</div>
+<img id="dialog" src="img/dhxzjfiod.gif"/>
+<script type="text/javascript">
+var x;
+function reduce(){
+	var x = document.getElementById("zhuan").value;//得到用户输入的值
+	document.getElementById("zhuan").value = "";//将用户输入的值清空
+function jisuan(x){
+if (x == ""){
+	x = "你忘了输入数字啦!傻瓜";
+	return x;
+}
+if (x.match(/[^0-9]+/g)){
+	var pp = x.match(/[^0-9]+/g);
+	for (i = 0;i < pp.length;i++){
+		if (pp[i].match(/[^+-.]+/g)){
+			x = "你写的这是天书吗？人家看不懂哎~";
+			return x;
+		}
+	}
+	for (i = 0;i < pp.length;i++){
+		if (pp[i].match(/[+]/g)){
+			x = "带个正号有意义吗？";
+			return x;
+		}
+		else if (pp[i].match(/[-]/g)){
+			x = "负数是初中生才懂的，人家才小学三年级呢";
+			return x;
+		}
+		else if (pp[i].match(/[.]/g)){
+			x = "人家还没学小数呢，好伤心呀";
+			return x;
+		}
+	}
+}//拒绝非数字的值,小数值和负数值
+var a = Array(x.length);//新建一个和x长度相同的数组
+for (i = 0;i < x.length;i++){
+	if (x[0] == 0){//首数字是否为零
+		for (i = 0;x[i] == 0;i++){
+			if (i != x.length-1){
+			delete x[i]
+			}//删除多余的零
+		}
+		var a = new Array(x.length-i);
+		for (i,k = 0;i < x.length;i++,k++){
+			a[k] = x[i]
+		}//将剩下的数字赋给数组a
+		break;
+	}
+	else{
+		a[i] = x[i]
+	}//遍历数组,将x的各项赋给a
+}
+if (a.length > 12){
+	x = "这个数字太大了，人家算不出来嘛";
+	return x;
+}//拒绝过大值
+var s = Array("零","一","二","三","四","五","六","七","八","九");
+for (i = 0;i < a.length;i++){
+	for (k = 0;k < s.length;k++){
+		if (a[i] == k){
+			a[i] = s[k]
+		}
+	}
+}
+var f = Array(4);//个位备用
+var b = Array(4);//个位
+var c = Array(4);//万位
+var d = Array(4);//亿位
+for (i = a.length-1,k = 3;i > -1;i--,k--){
+	b[k] = a[i];
+	f[k] = a[i]
+}
+for (i = a.length-5,k = 3;i > -1;i--,k--){
+	c[k] = a[i]
+}
+for (i = a.length-9,k = 3;i > -1;i--,k--){
+	d[k] = a[i]
+}//将x分为三组
+var DW = Array("千","百","十","");
+function dw(e){
+	if (e[e.length-1] != "零"){
+		for (i = e.length-1,k = 3;i > -1;i--,k--){
+			if (e[i] != undefined){
+				if (e[i] != "零"){
+					e[i] = e[i] + DW[k]
+				}
+			}
+			else {
+				e[i] = ""
+			}
+		}
+	}
+	else{
+		for (i = 3;e[i] == "零";i--){
+			e[i] = ""
+		}
+		for (i,k = i;i > -1;i--,k--){
+			if (e[i] != undefined){
+				if (e[i] != "零"){
+					e[i] = e[i] + DW[k]
+				}
+			}
+			else {
+				e[i] = ""
+			}
+		} 
+	}
+	if (e[2] == "一十" && e[1] == ""){
+	e[2] = "十"
+	}
+	return e;
+}
+b = dw(b);
+c = dw(c);
+d = dw(d);
+/*var btest = (b[0] != "" || b[1] != "" || b[2] != "" || b[3] != "");
+var ctest = (c[0] == "" && c[1] == "" && c[2] == "" && c[3] == "");
+var dtest = (d[0] != "" || d[1] != "" || d[2] != "" || d[3] != "");
+if (c[3] == "" && (dtest || c[0] != "" || c[1] != "" || c[2] != "") && (btest)){
+	b[0] = "零" + b[0]
+}
+if (d[3] == "" && (d[0] != "" || d[1] != "" || d[2] != "") && (ctest)){
+	c[0] = "零" + c[0]
+}
+if (d[3] == "" && (d[0] != "" || d[1] != "" || d[2] != "") && (c[0] == "" && c[1] == "" && c[2] == "" && c[3] == "") && (btest)){
+	b[0] = "零" + b[0]
+}*/
+if (c[3] == "" && (d[0] != "" || d[1] != "" || d[2] != "" || d[3] != "" || c[0] != "" || c[1] != "" || c[2] != "") && (b[0] != "" || b[1] != "" || b[2] != "" || b[3] != "")){
+	b[0] = "零" + b[0]
+}
+if (d[3] == "" && (d[0] != "" || d[1] != "" || d[2] != "") && (c[0] != "" || c[1] != "" || c[2] != "" || c[3] != "")){
+	c[0] = "零" + c[0]
+}
+if (d[3] == "" && (d[0] != "" || d[1] != "" || d[2] != "") && (c[0] == "" && c[1] == "" && c[2] == "" && c[3] == "") && (b[0] != "" || b[1] != "" || b[2] != "" || b[3] != "")){
+	b[0] = "零" + b[0]
+} 
+if (/十$/.exec(b[2]) && b[1] != "" && b[3] == "" && b[1] != "零"){
+	b[2] = f[2]
+}
+if (/百$/.exec(b[1]) && b[0] != "" && b[2] == "" && b[0] != "零"){
+	b[1] = f[1]
+}
+/* if (/千$/.exec(b[0]) && b[1] == ""){
+	for (i = 3;i > -1;i--){
+		if (c[i] != ""){
+			b[0] = f[0]
+		}
+		else if(d[i] != ""){
+			b[0] = f[0]
+		}
+	}
+}  */
+if (d[0] == ""&&d[1] == ""&&d[2] == ""&&d[3] == ""){
+	if (c[0] == ""&&c[1] == ""&&c[2] == ""&&c[3] == ""){
+		if (b[0] == ""&&b[1] == ""&&b[2] == ""&&b[3] == ""){
+			x = "零";
+			return x;
+		}
+		else{
+			x = b[0] + b[1] + b[2] + b[3]
+		}
+	}
+	else {
+		x = c[0] + c[1] + c[2] + c[3] + "万" + b[0] + b[1] + b[2] + b[3]
+	}
+}
+else if (c[0] == ""&&c[1] == ""&&c[2] == ""&&c[3] == ""){
+	x = d[0] + d[1] + d[2] + d[3] + "亿" + b[0] + b[1] + b[2] + b[3]
+} 
+else {
+	x = d[0] + d[1] + d[2] + d[3] + "亿" + c[0] + c[1] + c[2] + c[3] + "万" + b[0] + b[1] + b[2] + b[3]
+}
+var z = Array(x.length);
+for (i = x.length-1;i > -1;i--){
+	z[i] = x[i];
+	if (x[i] == "零" && x[i-1] == "零"){
+		z[i] = ""
+	}
+}//将x各项赋给z去除中间多余的零
+x = z.join("");
+return x;
+}
+x = jisuan(x);
+document.getElementById("speak").childNodes[0].nodeValue = x;
+return x;
+}
+/*var i ;
+var t = "";
+function roll(){
+	if (document.styleSheets[0].rules[5].style.display == "none"){
+		document.styleSheets[0].rules[5].style.display = ""
+	}
+	if (i < x.length){
+		t = t+x[i];
+		document.getElementById("speak").childNodes[0].nodeValue = t;
+		i++;
+		setTimeout("roll()",-document.getElementById("controlSpeed").value);
+	}
+	else{
+		document.getElementById("speak").childNodes[0].nodeValue = x;
+		t = "";
+		document.styleSheets[0].rules[5].style.display = "none";
+		document.getElementById("zhuan").focus();
+	}
+}*/
+var roll = (function(){
+	var i = 0;
+	var t = "";
+	var x;
+return function(){
+	//跳过按钮
+	if (arguments[0] == 999){
+		i = 999
+	}
+	//函数再次运行或函数运行时再次给函数输入值时初始化各变量值
+	if (arguments.length == 1 && arguments[0] != 999){
+		x = arguments[0];
+		t = "";
+		i = 0;
+	}
+	if (document.styleSheets[0].rules[5].style.display == "none"){
+		document.styleSheets[0].rules[5].style.display = ""
+	}
+	if (i < x.length){
+		t = t+x[i];
+		document.getElementById("speak").childNodes[0].nodeValue = t;
+		i++;//console.log(x,t,i)
+		setTimeout("roll()",-document.getElementById("controlSpeed").value);//-document.getElementById("controlSpeed").value
+	}
+	else{
+		document.getElementById("speak").childNodes[0].nodeValue = x;
+		document.styleSheets[0].rules[5].style.display = "none";
+		document.getElementById("zhuan").focus();//console.log(x,t,i)
+	}
+}
+}())//闭包解决setTimeout无法找到在外部函数内嵌套的函数问题,可是为什么呢???
+/*var roll = (function(){
+	var i = 0;
+	var t = "";
+	var x;
+	var ti;
+	var speed;
+	return {
+		main : function(){
+	if (document.styleSheets[0].rules[5].style.display == "none"){
+		document.styleSheets[0].rules[5].style.display = ""
+	}
+	if (i < x.length){
+		t = t+x[i];
+		document.getElementById("speak").childNodes[0].nodeValue = t;
+		i++;
+	}
+	else{
+		clearInterval(ti);
+		document.getElementById("speak").childNodes[0].nodeValue = x;
+		document.styleSheets[0].rules[5].style.display = "none";
+		document.getElementById("zhuan").focus();//console.log(x,t,i)
+	}
+	},
+	go : function(){
+		if (arguments.length == 1){
+		x = arguments[0];
+		t = "";
+		i = 0;
+		clearInterval(ti);
+		}
+		t = t+x[i];
+		document.getElementById("speak").childNodes[0].nodeValue = t;
+		i++;
+		setInterval("roll.main()",roll.speed())
+	},
+	skip : function(){
+		clearInterval(ti);
+		document.getElementById("speak").childNodes[0].nodeValue = x;
+		document.styleSheets[0].rules[5].style.display = "none";
+		document.getElementById("zhuan").focus();//console.log(x,t,i)
+	},
+	speed : function(){
+		return -document.getElementById("controlSpeed").value
+	}
+	}
+}())*/
+function CR(){
+	if (document.getElementById("controlRoll").name == "1"){
+		document.getElementById("controlRoll").src = "img/off.gif";
+		document.getElementById("anniu").onclick = function(){reduce();return false};
+		document.getElementById("controlRoll").name = "0";
+		document.getElementById("controlSpeed").disabled="disabled";
+		document.getElementById("zhuan").focus();
+		return 1;
+	}
+	if (document.getElementById("controlRoll").name == "0"){
+		document.getElementById("controlRoll").src = "img/on.gif";
+		document.getElementById("anniu").onclick = function(){reduce();roll(document.getElementById('speak').childNodes[0].nodeValue);return false};
+		document.getElementById("controlRoll").name = "1";
+		document.getElementById("controlSpeed").disabled = false;
+		document.getElementById("zhuan").focus();
+		return 0;
+	}
+}//开关
+var imageList = ["haruhi.gif","gakki.gif"];//背景图片列表
+var imageNameList = ["凉宫春日","新垣结衣"];//背景图片名称
+function right(){
+	var R = document.getElementById("rightChange");
+	var L = document.getElementById("leftChange");
+	if (imageList[+R.name+1] != undefined){
+		document.styleSheets[0].rules[0].style.backgroundImage = "url(backgroundImage/"+imageList[+R.name+1]+")";
+		document.getElementById("imageName").childNodes[0].nodeValue = imageNameList[+R.name+1];//console.log(L.name);console.log(R.name);
+		R.name = +R.name + 1;
+		L.name = +L.name + 1;
+	}
+	else {
+		document.styleSheets[0].rules[0].style.backgroundImage = "url(backgroundImage/"+imageList[0]+")";
+		document.getElementById("imageName").childNodes[0].nodeValue = imageNameList[0];
+		R.name = "0";
+		L.name = "0";
+	}
+	return true;
+}//右切换
+function left(){
+	var R = document.getElementById("rightChange");
+	var L = document.getElementById("leftChange");
+	if (L.name != 0){
+		document.styleSheets[0].rules[0].style.backgroundImage = "url(backgroundImage/"+imageList[+L.name-1]+")";
+		document.getElementById("imageName").childNodes[0].nodeValue = imageNameList[+L.name-1];
+		L.name = +L.name - 1;
+		R.name = +R.name - 1;
+	}
+	else{
+		document.styleSheets[0].rules[0].style.backgroundImage = "url(backgroundImage/"+imageList[imageList.length-1]+")";
+		document.getElementById("imageName").childNodes[0].nodeValue = imageNameList[imageNameList.length-1];
+		L.name = imageList.length-1;
+		R.name = imageList.length-1;
+	}
+	return true;
+}//左切换
+</script>
+</body>
+</html>
