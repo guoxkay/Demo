@@ -13,6 +13,9 @@ html,body{
 	margin-top: -280px;
 	margin-left: -400px;
 }
+.score{
+	margin-bottom: 5px;
+}
 .pane{
 	width: 800px;
 	height: 450px;
@@ -45,4 +48,8 @@ html,body{
 }
 .list div{
 	display: inline-block;
+	margin: 10px 100px 0 100px;
+}
+#pause,#nomusic{
+	display: none;
 }
