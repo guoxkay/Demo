@@ -2,27 +2,47 @@ html,body{
 	margin: 0;
 	padding: 0;
 	font-family: "黑体";
+	font-size: 25px;
 }
 .main{
-	border: solid;
 	width: 800px;
 	height: 500px;
 	position: absolute;
 	left: 50%;
 	top: 50%;
-	margin-top: -250px;
+	margin-top: -280px;
 	margin-left: -400px;
 }
-.begin{
-	width: 50px;
-	height: 50px;
+.pane{
+	width: 800px;
+	height: 450px;
 	border: solid;
-	border-radius: 50px;
+	position: relative;
+}
+.begin{
+	width: 100px;
+	height: 100px;
+	border: solid;
+	border-radius: 100px;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-top: -50px;
+	margin-left: -50px;
+	background-color: black;
 }
 .begin div{
 	width: 0;
 	height: 0;
-	border-top: 20px solid transparent;
-	border-bottom: 20px solid transparent;
-	border-left: 40px solid black;
+	border-top: 30px solid transparent;
+	border-bottom: 30px solid transparent;
+	border-left: 60px solid white;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-left: -25px;
+	margin-top: -30px;
+}
+.list div{
+	display: inline-block;
 }
