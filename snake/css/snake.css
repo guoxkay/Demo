@@ -16,6 +16,9 @@ html,body{
 .score{
 	margin-bottom: 5px;
 }
+.score>span:last-child{
+	float: right;
+}
 .pane{
 	width: 800px;
 	height: 450px;
@@ -33,6 +36,7 @@ html,body{
 	margin-top: -50px;
 	margin-left: -50px;
 	background-color: black;
+	z-index: 1;
 }
 .begin div{
 	width: 0;
@@ -49,7 +53,18 @@ html,body{
 .list div{
 	display: inline-block;
 	margin: 10px 100px 0 100px;
+	cursor: pointer;
 }
 #pause,#nomusic{
 	display: none;
+}
+@keyframes whrill{
+	from{transform: rotateY(0deg);}
+	to{transform: rotateY(360deg);}
+}
+.list img:hover{
+	-webkit-animation-name : whrill;
+	-webkit-animation-duration : 500ms;
+	animation-name : whrill;
+	animation-duration : 500ms;
 }

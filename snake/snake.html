@@ -8,7 +8,7 @@
 </head>
 <body>
 	<div class="main">
-		<div class="score">score:<span></span></div>
+		<div class="score"><span>score:<span></span></span><span>highest score:<span></span></span></div>
 		<div class="pane">
 			<div class="begin"><div></div></div>
 			<canvas id="snake" width="800x" height="450px"></canvas>
@@ -18,6 +18,9 @@
 			<div class="pause"><img id="begin" src="image/begin.png"><img id="pause" src="image/pause.png"></div>
 			<div class="music"><img id="music" src="image/music.png"><img id="nomusic" src="image/nomusic.png"></div>
 		</div>
+		<div><audio autoplay="autoplay"></audio></div>
 	</div>
+	<script type="text/javascript" src="../../zepto/zepto.min.js"></script>
+	<script type="text/javascript" src="js/snake.js"></script>
 </body>
 </html>
