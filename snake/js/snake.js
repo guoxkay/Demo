@@ -36,6 +36,17 @@ var main=(function(){
 		}
 	}
 }())
+var snake = (function(){
+	var score;
+	return {
+		//得到分数
+		getScore : function(){
+			return score
+		},
+	}
+
+
+}())
 main.printScore();
 main.printHscore();
 $(".reload").click(main.reload);
