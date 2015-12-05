@@ -5,13 +5,13 @@ html,body{
 	font-size: 25px;
 }
 .main{
-	width: 800px;
+	width: 780px;
 	height: 500px;
 	position: absolute;
 	left: 50%;
 	top: 50%;
 	margin-top: -280px;
-	margin-left: -400px;
+	margin-left: -390px;
 }
 .score{
 	margin-bottom: 5px;
@@ -20,7 +20,7 @@ html,body{
 	float: right;
 }
 .pane{
-	width: 800px;
+	width: 780px;
 	height: 450px;
 	border: solid;
 	position: relative;
@@ -37,6 +37,8 @@ html,body{
 	margin-left: -50px;
 	background-color: black;
 	z-index: 1;
+	cursor: pointer;
+	display: none;
 }
 .begin div{
 	width: 0;
