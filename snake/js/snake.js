@@ -43,6 +43,7 @@ var snake = (function(){
 	var cell = 15;//蛇头和蛇身宽度，以52*30定位
 	var snakeBodyPos = [];//记录蛇身位置
 	var snakeHeadPos = [];//记录蛇头位置
+	var snakePos = [];
 	var fruitPos = [];//记录当前果实位置
 	var dir;//记录方向
 	return {
@@ -64,7 +65,7 @@ var snake = (function(){
 			if ((x < 0 || y < 0) || (x > 51) || (y > 29)){
 				return true
 			}
-			for (i = 0;i < snakeBodyPos.length;i++){
+			for (var i = 0;i < snakeBodyPos.length;i++){
 				if (x === snakeBodyPos[i][0] && y === snakeBodyPos[i][1]){
 					return true
 				}
@@ -81,8 +82,7 @@ var snake = (function(){
 			if (fruitPos[0] === undefined && fruitPos[1] === undefined){
 				var x = Math.floor(Math.random()*52);
 				var y = Math.floor(Math.random()*30);
-				var snakePos = snakeBodyPos.push(snakeHeadPos);
-				for (i = 0;i < snakePos.length;i++){
+				for (var i = 0;i < snakePos.length;i++){
 					if (x === snakePos[i][0] && y === snakePos[i][1]){
 						snake.createFruit();
 						return
@@ -103,6 +103,18 @@ var snake = (function(){
 		//改变方向
 		changeDir : function(direction){
 			dir = direction
+		},
+		//绘制初始蛇
+		beginSnake : function(x,y,len){
+			snake.snakeHead(x,y);
+			snakeHeadPos = [x,y];
+			for (var i = 1;i < len;i++){
+				snake.snakeBody(x-i,y);
+				snakeBodyPos.push([x-i,y])
+			}
+			dir = "right";
+			snakePos = snakeBodyPos;
+			snakePos.unshift(snakeHeadPos);
 		},
 		//移动
 		move : function(){
