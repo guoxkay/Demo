@@ -70,19 +70,43 @@ var snake = (function(){
 				}
 			}
 		},
+		//绘制果实
+		fruit : function(x,y){
+			ctx.beginPath();
+			ctx.arc(x*15+7,y*15+7,7,0,Math.PI*2);
+			ctx.fill()
+		},
 		//随机生成果实
 		createFruit : function(){
-
+			if (fruitPos[0] === undefined && fruitPos[1] === undefined){
+				var x = Math.floor(Math.random()*52);
+				var y = Math.floor(Math.random()*30);
+				var snakePos = snakeBodyPos.push(snakeHeadPos);
+				for (i = 0;i < snakePos.length;i++){
+					if (x === snakePos[i][0] && y === snakePos[i][1]){
+						snake.createFruit();
+						return
+					}
+				}
+				snake.fruit(x,y);
+				fruitPos.push(x);
+				fruitPos.push(y)
+			}
 		},
 		//吃果实判定
 		eatFruit : function(x,y){
 			if (x === fruitPos[0] && y === fruitPos[1]){
+				fruitPos = [];
 				return true
 			}
 		},
 		//改变方向
 		changeDir : function(direction){
 			dir = direction
+		},
+		//移动
+		move : function(){
+
 		}
 	}
 
