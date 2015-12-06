@@ -1,4 +1,4 @@
-html,body{
+﻿html,body{
 	margin: 0;
 	padding: 0;
 	font-family: "黑体";
@@ -38,7 +38,6 @@ html,body{
 	background-color: black;
 	z-index: 1;
 	cursor: pointer;
-	display: none;
 }
 .begin div{
 	width: 0;
@@ -69,4 +68,27 @@ html,body{
 	-webkit-animation-duration : 500ms;
 	animation-name : whrill;
 	animation-duration : 500ms;
+}
+.died{
+	font-size: 100px;
+	position: absolute;
+	top: 150px;
+	left: 200px;
+	display: none;
+}
+.pane>div:last-child{
+	position: absolute;
+	top: 150px;
+	right: 180px;
+	background-color: white;
+	height: 100px;
+	-webkit-animation-name : die;
+	-webkit-animation-duration : 1s;
+	animation-name : die;
+	animation-duration : 1s;
+	display: none;
+}
+@keyframes die{
+	from{width: 400px;}
+	to{width: 0;}
 }
