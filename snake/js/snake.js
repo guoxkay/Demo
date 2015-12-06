@@ -44,6 +44,7 @@
 	}
 }())
 var snake = (function(){
+	var l = localStorage;
 	var score = 0;
 	var canvas = document.getElementById("snake");
 	var ctx = canvas.getContext("2d");
@@ -55,13 +56,37 @@ var snake = (function(){
 	var snakePos = [];
 	var fruitPos = [];//记录当前果实位置
 	var dir;//记录方向
-	var speed = 1;//速度
+	var speed = l.getItem("speed") || 6;//速度
 	var isPause = true;
 	var m;//移动定时
 	return {
 		//得到分数
 		getScore : function(){
 			return score
+		},
+		//设置速度
+		setSpeed : function(){
+			$(".speed span").text(speed)
+		},
+		//减速
+		reduceSpeed : function(){
+			if (speed > 1){
+				speed = +speed - 1;
+				snake.moving();
+				snake.moving();
+				l.setItem("speed",speed);
+				snake.setSpeed()
+			}
+		},
+		//加速
+		addSpeed : function(){
+			if (speed < 9){
+				speed = +speed + 1;
+				snake.moving();
+				snake.moving();
+				l.setItem("speed",speed);
+				snake.setSpeed()
+			}
 		},
 		//绘制蛇头
 		snakeHead : function(x,y){
@@ -141,7 +166,7 @@ var snake = (function(){
 			if (x === fruitPos[0] && y === fruitPos[1]){
 				snake.clearSnake(fruitPos[0],fruitPos[1]);
 				fruitPos = [];
-				score += speed;
+				score = score + +speed;
 				main.setScore();
 				main.printScore();
 				main.setHscore();
@@ -181,7 +206,9 @@ var snake = (function(){
 						}
 					}
 				})
-			},speed*100)
+			},1/speed*300);
+			snake.moving();
+			snake.moving();
 		},
 		//绘制初始蛇
 		beginSnake : function(x,y,len){
@@ -273,19 +300,23 @@ var snake = (function(){
 			snakePos.unshift(snakeHeadPos);
 		},
 		//游戏进行时
-		moving : function(){
+		moving : function(a){
 			if (isPause){
-				m = setInterval(snake.move,speed*100);
-				$(".begin").css("display","none");
-				$("#begin").css("display","none");
-				$("#pause").css("display","inline-block");
+				m = setInterval(snake.move,1/speed*300);
+				if (a){
+					$(".begin").css("display","none");
+					$("#begin").css("display","none");
+					$("#pause").css("display","inline-block");
+				}
 				isPause = false
 			}
 			else {
 				clearInterval(m);
-				$(".begin").css("display","block");
-				$("#begin").css("display","inline-block");
-				$("#pause").css("display","none");
+				if (a){
+					$(".begin").css("display","block");
+					$("#begin").css("display","inline-block");
+					$("#pause").css("display","none");
+				}
 				isPause = true
 			}
 		}
@@ -293,12 +324,13 @@ var snake = (function(){
 }())
 main.printScore();
 main.printHscore();
+snake.setSpeed();
 snake.beginSnake(5,15,6);
 snake.createFruit();
 $("body").keydown(function(){
 	switch (event.which){
 		case 32 : {
-			snake.moving();
+			snake.moving(true);
 			break
 		}
 		case 38 : {
@@ -319,6 +351,8 @@ $("body").keydown(function(){
 		}
 	}
 })
+$(".speed>div:first-child").click(snake.reduceSpeed);
+$(".speed>div:last-child").click(snake.addSpeed);
 $(".reload").click(main.reload);
 $(".music").click(main.music);
 $(".pause").click(snake.moving)

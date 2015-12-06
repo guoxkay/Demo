@@ -19,6 +19,32 @@
 .score>span:last-child{
 	float: right;
 }
+.speed{
+	display: inline-block;
+	position: absolute;
+	left: 360px;
+}
+.speed div{
+	display: inline-block;
+	cursor: pointer;
+}
+.speed>div:first-child{
+	width: 0;
+	height: 0;
+	border-top: 8px solid transparent;
+	border-bottom: 8px solid transparent;
+	border-right: 16px solid;
+}
+.speed>div:last-child{
+	width: 0;
+	height: 0;
+	border-top: 8px solid transparent;
+	border-bottom: 8px solid transparent;
+	border-left: 16px solid;
+}
+.speed span{
+	margin: 0 10px 0 10px;
+}
 .pane{
 	width: 780px;
 	height: 450px;
