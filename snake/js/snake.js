@@ -46,6 +46,7 @@ var snake = (function(){
 	var snakePos = [];
 	var fruitPos = [];//记录当前果实位置
 	var dir;//记录方向
+	var speed = 1;//速度
 	return {
 		//得到分数
 		getScore : function(){
@@ -74,7 +75,7 @@ var snake = (function(){
 		//绘制果实
 		fruit : function(x,y){
 			ctx.beginPath();
-			ctx.arc(x*15+7,y*15+7,7,0,Math.PI*2);
+			ctx.arc(x*cell+7,y*cell+7,7,0,Math.PI*2);
 			ctx.fill()
 		},
 		//随机生成果实
@@ -96,7 +97,9 @@ var snake = (function(){
 		//吃果实判定
 		eatFruit : function(x,y){
 			if (x === fruitPos[0] && y === fruitPos[1]){
+				snake.clearSnake(fruitPos[0],fruitPos[1]);
 				fruitPos = [];
+				score += speed;
 				return true
 			}
 		},
@@ -113,12 +116,96 @@ var snake = (function(){
 				snakeBodyPos.push([x-i,y])
 			}
 			dir = "right";
-			snakePos = snakeBodyPos;
+			for (var i = 0;i < snakeBodyPos.length;i++){
+				snakePos[i] = snakeBodyPos[i]
+			}
 			snakePos.unshift(snakeHeadPos);
+		},
+		//擦除
+		clearSnake : function(x,y){
+			ctx.clearRect(x*cell,y*cell,cell,cell)
+		},
+		getSnake : function(aaa){
+			if (aaa === "snake"){
+				return snakePos
+			}
+			if (aaa === "body"){
+				return snakeBodyPos
+			}
+			if (aaa === "head"){
+				return snakeHeadPos
+			}
 		},
 		//移动
 		move : function(){
-
+			var x = snakeHeadPos[0];
+			var y = snakeHeadPos[1];
+			var a = snakeBodyPos[snakeBodyPos.length-1][0];
+			var b = snakeBodyPos[snakeBodyPos.length-1][1];
+			switch (dir){
+				case "up" : {
+					if (snake.isDead(x,y-1)){
+						return
+					}
+					if (!snake.eatFruit(x,y-1)){
+						snake.clearSnake(a,b);
+						snakeBodyPos.pop();
+						snakePos.pop();
+					}
+					snake.clearSnake(x,y);
+					snake.snakeBody(x,y);
+					snake.snakeHead(x,y-1);
+					snakeHeadPos = [x,y-1];
+					break
+				}
+				case "down" : {
+					if (snake.isDead(x,y+1)){
+						return
+					}
+					if (!snake.eatFruit(x,y+1)){
+						snake.clearSnake(a,b);
+						snakeBodyPos.pop();
+						snakePos.pop();
+					}
+					snake.clearSnake(x,y);
+					snake.snakeBody(x,y);
+					snake.snakeHead(x,y+1);
+					snakeHeadPos = [x,y+1];
+					break
+				}
+				case "left" : {
+					if (snake.isDead(x-1,y)){
+						return
+					}
+					if (!snake.eatFruit(x-1,y)){
+						snake.clearSnake(a,b);
+						snakeBodyPos.pop();
+						snakePos.pop();
+					}
+					snake.clearSnake(x,y);
+					snake.snakeBody(x,y);
+					snake.snakeHead(x-1,y);
+					snakeHeadPos = [x-1,y];
+					break
+				}
+				case "right" : {
+					if (snake.isDead(x+1,y)){
+						return
+					}
+					if (!snake.eatFruit(x+1,y)){
+						snake.clearSnake(a,b);
+						snakeBodyPos.pop();
+						snakePos.pop();
+					}
+					snake.clearSnake(x,y);
+					snake.snakeBody(x,y);
+					snake.snakeHead(x+1,y);
+					snakeHeadPos = [x+1,y];
+					break
+				}
+			}
+			snakeBodyPos.unshift([x,y]);
+			snakePos.unshift(snakeHeadPos);
 		}
 	}
 
