@@ -118,3 +118,8 @@
 	from{width: 400px;}
 	to{width: 0;}
 }
+@media screen and (max-width: 768px){
+	.list{
+		display: none;
+	}
+}

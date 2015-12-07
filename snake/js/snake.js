@@ -185,7 +185,7 @@ var snake = (function(){
 				$("body").keydown(function(){
 					switch (event.which){
 						case 32 : {
-							snake.moving();
+							snake.moving(true);
 							break
 						}
 						case 38 : {
