@@ -121,7 +121,7 @@ var snake = (function(){
 			$(".died").css("display","block");
 			$("body").unbind("keydown");
 			$(".pause").unbind("click");
-			$("body").keydown(function(){
+			$("body").keydown(function(event){
 				if (event.which === 32){
 					main.reload()
 				}
@@ -182,7 +182,7 @@ var snake = (function(){
 			dir = direction;
 			$("body").unbind("keydown");
 			setTimeout(function(){
-				$("body").keydown(function(){
+				$("body").keydown(function(event){
 					switch (event.which){
 						case 32 : {
 							snake.moving(true);
@@ -327,7 +327,7 @@ main.printHscore();
 snake.setSpeed();
 snake.beginSnake(5,15,6);
 snake.createFruit();
-$("body").keydown(function(){
+$("body").keydown(function(event){
 	switch (event.which){
 		case 32 : {
 			snake.moving(true);
@@ -351,6 +351,7 @@ $("body").keydown(function(){
 		}
 	}
 })
+$(".begin").click(snake.moving);
 $(".speed>div:first-child").click(snake.reduceSpeed);
 $(".speed>div:last-child").click(snake.addSpeed);
 $(".reload").click(main.reload);

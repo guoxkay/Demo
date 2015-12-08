@@ -12,7 +12,7 @@
 		<div class="score"><span>score:<span></span></span><div class="speed"><div></div><span></span><div></div></div><span>highest score:<span></span></span></div>
 		<div class="pane">
 			<div class="begin"><div></div></div>
-			<canvas id="snake" width="780px" height="450px"></canvas>
+			<canvas id="snake"></canvas>
 			<div class="died">YOU DIED</div>
 			<div></div>
 		</div>
@@ -24,6 +24,20 @@
 		<div><audio autoplay="autoplay"></audio></div>
 	</div>
 	<script type="text/javascript" src="../../zepto/zepto.min.js"></script>
+	<script type="text/javascript">
+		var w = document.body.clientWidth;
+		var h = document.body.clientHeight;
+		if (w <= 768){
+			$(".pane").css("width",(w-w%15)+"px").css("height",(w-w%15)*4/3+"px").css("border-width",((w%15)/2)+"px");
+			$(".score").css("top",(w-w%15)*4/3+"px")
+			document.getElementById("snake").width = w-w%15;
+			document.getElementById("snake").height = (w-w%15)*4/3;
+		}
+		else{
+			document.getElementById("snake").width = 780;
+			document.getElementById("snake").height = 450;
+		}
+	</script>
 	<script type="text/javascript" src="js/snake.js"></script>
 </body>
 </html>

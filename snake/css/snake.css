@@ -122,4 +122,26 @@
 	.list{
 		display: none;
 	}
+	.main{
+		position: static;
+		margin: 0;
+		width: 0;
+		height: 0;
+	}
+	.score{
+		position: absolute;
+		margin-top: 5px;
+	}
+	.score>span{
+		display: block;
+	}
+	.speed{
+		display: none;
+	}
+	.died{
+		left: 0;
+	}
+	.pane>div:last-child{
+		right: 0;
+	}
 }
