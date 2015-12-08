@@ -143,5 +143,7 @@
 	}
 	.pane>div:last-child{
 		right: 0;
+		-webkit-animation-name : none;
+		animation-name : none;
 	}
 }

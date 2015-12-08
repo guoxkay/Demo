@@ -59,6 +59,10 @@ var snake = (function(){
 	var speed = l.getItem("speed") || 6;//速度
 	var isPause = true;
 	var m;//移动定时
+	if (document.body.clientWidth <= 768){
+		var wCell = (document.body.clientWidth - document.body.clientWidth%15)/15;
+		var hCell = (document.body.clientWidth - document.body.clientWidth%15)/15*4/3;
+	}
 	return {
 		//得到分数
 		getScore : function(){
@@ -121,17 +125,29 @@ var snake = (function(){
 			$(".died").css("display","block");
 			$("body").unbind("keydown");
 			$(".pause").unbind("click");
+			unbindSwipe();
 			$("body").keydown(function(event){
 				if (event.which === 32){
 					main.reload()
 				}
 			})
+			$("body").tap(function(){
+				main.reload()
+			})
 		},
 		//死亡判定
 		isDead : function(x,y){
-			if ((x < 0 || y < 0) || (x > 51) || (y > 29)){
-				snake.pengpeng(x,y);
-				return true
+			if (document.body.clientWidth <= 768){
+				if ((x < 0 || y < 0) || (x > wCell - 1) || (y > hCell - 1)){
+					snake.pengpeng(x,y);
+					return true
+				}
+			}
+			else {
+				if ((x < 0 || y < 0) || (x > 51) || (y > 29)){
+					snake.pengpeng(x,y);
+					return true
+				}
 			}
 			for (var i = 0;i < snakeBodyPos.length;i++){
 				if (x === snakeBodyPos[i][0] && y === snakeBodyPos[i][1]){
@@ -149,8 +165,14 @@ var snake = (function(){
 		//随机生成果实
 		createFruit : function(){
 			if (fruitPos[0] === undefined && fruitPos[1] === undefined){
-				var x = Math.floor(Math.random()*52);
-				var y = Math.floor(Math.random()*30);
+				if (document.body.clientWidth <= 768){
+					var x = Math.floor(Math.random()*wCell);
+					var y = Math.floor(Math.random()*hCell);
+				}
+				else {
+					var x = Math.floor(Math.random()*52);
+					var y = Math.floor(Math.random()*30);
+				}
 				for (var i = 0;i < snakePos.length;i++){
 					if (x === snakePos[i][0] && y === snakePos[i][1]){
 						snake.createFruit();
@@ -351,6 +373,16 @@ $("body").keydown(function(event){
 		}
 	}
 })
+function bindSwipe(){
+	$("body").swipeUp(function(){snake.changeDir("up")});
+	$("body").swipeDown(function(){snake.changeDir("down")});
+	$("body").swipeLeft(function(){snake.changeDir("left")});
+	$("body").swipeRight(function(){snake.changeDir("right")})
+}
+function unbindSwipe(){
+	$("body").unbind("swipeUp").unbind("swipeDown").unbind("swipeLeft").unbind("swipeRight")
+}
+bindSwipe();
 $(".begin").click(snake.moving);
 $(".speed>div:first-child").click(snake.reduceSpeed);
 $(".speed>div:last-child").click(snake.addSpeed);
