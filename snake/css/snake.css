@@ -119,31 +119,8 @@
 	to{width: 0;}
 }
 @media screen and (max-width: 768px){
-	.list{
-		display: none;
-	}
-	.main{
-		position: static;
-		margin: 0;
-		width: 0;
-		height: 0;
-	}
-	.score{
-		position: absolute;
-		margin-top: 5px;
-	}
-	.score>span{
-		display: block;
-	}
-	.speed{
-		display: none;
-	}
-	.died{
-		left: 0;
-	}
-	.pane>div:last-child{
-		right: 0;
-		-webkit-animation-name : none;
-		animation-name : none;
+	body {
+		z-index: 99;
+		background-color: white;
 	}
 }
