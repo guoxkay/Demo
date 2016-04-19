@@ -1,0 +1,11 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+div {
+	position: absolute;
+	left: 1280px;
+	top: 720px;
+	margin-top: 360px;
+	margin-left: 640px;
+}
