@@ -83,3 +83,81 @@ var Block = function(x,y,width,height,HP){
 Block.prototype = {
 	constructor : Block
 }
+var isCollisionWithBlock = function(ball,block){//砖块碰撞判定
+	var x = ball.x;
+	var y = ball.y;
+	var r = ball.r;
+	var bx = block.x;
+	var by = block.y;
+	var bh = block.h;
+	var bw = block.w;
+	if ((x-r >= bx && x-r <= bx+bw) && (y <= by+bh && y >= by)){
+		return {
+			isCol : true,
+			dir : "left"
+		}
+	}
+	if else ((y-r >= by && y-r <= by+bh) && (x >= bx && x <= bx+bw)){
+		return {
+			isCol : true,
+			dir : "top"
+		}
+	}
+	if else ((x+r >= bx && x+r <= bx+bw) && (y >= by && y <= by+bh)){
+		return {
+			isCol : true,
+			dir : "right"
+		}
+	}
+	if else ((y+r >= by && y+r <= by+bh) && (x >= bx && x <= bx+bw)){
+		return {
+			isCol : true,
+			dir : "bottom"
+		}
+	}
+	else {
+		return false
+	}
+}
+var isCollisionWithBorad = function(ball,board){
+	if (ball.y+ball.r >= board.y && (ball.x >= board.x && ball.x <= board.x+board.length)){
+		return true
+	}
+	else {
+		return false
+	}
+}
+var isCollisionWithWall = function(ball,screenWidth){
+	var x = ball.x;
+	var y = ball.y;
+	var r = ball.r;
+	if (x-r <= 0){
+		return {
+			isCol : true,
+			dir : "left"
+		}
+	}
+	if else (y-r <= 0){
+		return {
+			isCol : true,
+			dir : "top"
+		}
+	}
+	if else (x+r >= screenWidth){
+		return {
+			isCol : true,
+			dir : "right"
+		}
+	}
+	else {
+		return false
+	}
+}
+var isDead = function(ball,screenHeight){
+	if (ball.y - ball.r >= screenHeight){
+		return true
+	}
+	else {
+		return false
+	}
+}
