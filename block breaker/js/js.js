@@ -11,7 +11,8 @@ Board.prototype = {//木板原型
 		switch (dir){
 			case "left" : {
 				if (this.x >= 5){
-					this.x -= 5
+					this.x -= 5;
+					this.inertia--
 				}
 				else {
 					this.x = 0
@@ -20,7 +21,8 @@ Board.prototype = {//木板原型
 			}
 			case "right" : {
 				if (this.x <= screenWidth-this.length-5){
-					this.x += 5
+					this.x += 5;
+					this.inertia++
 				}
 				else {
 					this.x = screenWidth-this.length
@@ -160,6 +162,18 @@ var isDead = function(ball,screenHeight){
 	else {
 		return false
 	}
+}
+var boardCrashBall = function(board,ball){//当木板碰上球
+	if (ball.angle >= Math.PI && ball.angle <= Math.PI/2 * 3){
+		ball.angle = ball.angle - Math.PI
+	}
+	else if (ball.angle >= Math.PI/2 * 3 && ball.angle <= Math.PI * 2){
+		ball.angle = Math.PI * 2 - ball.angle
+	}
+	else {
+		console.log("wrong angle")
+	}
+	ball.angle = ball.angle - Math.PI/360 * board.inertia
 }
 var blockGroup = [];
 var ctx = $("#c").getContext('2d');
