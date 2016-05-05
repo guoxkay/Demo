@@ -161,3 +161,25 @@ var isDead = function(ball,screenHeight){
 		return false
 	}
 }
+var blockGroup = [];
+var ctx = $("#c").getContext('2d');
+var drawBall = function(ball){//绘制弹球
+	ctx.beginPath();
+	ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);
+	ctx.full()
+}
+var clearBall = function(ball){//清除球
+	ctx.clearRect(ball.x-ball.r,ball.y-ball.r,r*2+1,r*2+1)
+}
+var drawBoard = function(board){//绘制木板
+	ctx.fillRect(board.x,board.y,board.length,board.thick)
+}
+var clearBoard = function(board){//清除木板
+	ctx.clearRect(board.x,board.y,board.length,board.thick)
+}
+var drawBlock = function(block){//绘制砖块
+	ctx.fillRect(block.x,block.y,block.w,block.h)
+}
+var clearBlock = function(block){//清除砖块
+	clearRect(block.x,block.y,block.w,block.h)
+}

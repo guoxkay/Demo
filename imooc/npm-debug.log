@@ -1,0 +1,29 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\software\\nodejs\\node.exe',
+1 verbose cli   'C:\\software\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   'express' ]
+2 info using npm@2.14.7
+3 info using node@v4.2.2
+4 verbose config Skipping project config: C:\Users\郭楷/.npmrc. (matches userconfig)
+5 verbose install initial load of C:\Users\郭楷\package.json
+6 verbose stack Error: Invalid name: "郭楷"
+6 verbose stack     at ensureValidName (C:\software\nodejs\node_modules\npm\node_modules\normalize-package-data\lib\fixer.js:331:15)
+6 verbose stack     at Object.module.exports.fixNameField (C:\software\nodejs\node_modules\npm\node_modules\normalize-package-data\lib\fixer.js:210:5)
+6 verbose stack     at C:\software\nodejs\node_modules\npm\node_modules\normalize-package-data\lib\normalize.js:32:38
+6 verbose stack     at Array.forEach (native)
+6 verbose stack     at normalize (C:\software\nodejs\node_modules\npm\node_modules\normalize-package-data\lib\normalize.js:31:15)
+6 verbose stack     at final (C:\software\nodejs\node_modules\npm\node_modules\read-package-json\read-json.js:338:5)
+6 verbose stack     at then (C:\software\nodejs\node_modules\npm\node_modules\read-package-json\read-json.js:113:5)
+6 verbose stack     at ReadFileContext.<anonymous> (C:\software\nodejs\node_modules\npm\node_modules\read-package-json\read-json.js:284:20)
+6 verbose stack     at ReadFileContext.callback (C:\software\nodejs\node_modules\npm\node_modules\graceful-fs\graceful-fs.js:76:16)
+6 verbose stack     at FSReqWrap.readFileAfterOpen [as oncomplete] (fs.js:303:13)
+7 verbose cwd C:\Users\郭楷\Documents\GitHub\Demo\imooc
+8 error Windows_NT 10.0.10586
+9 error argv "C:\\software\\nodejs\\node.exe" "C:\\software\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "express"
+10 error node v4.2.2
+11 error npm  v2.14.7
+12 error Invalid name: "郭楷"
+13 error If you need help, you may report this error at:
+13 error     <https://github.com/npm/npm/issues>
+14 verbose exit [ 1, true ]
