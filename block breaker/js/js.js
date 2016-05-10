@@ -40,7 +40,7 @@ var Ball = function(x,y,r,speed){//弹球构造函数
 	this.y = y;
 	this.r = r;
 	this.angle = Math.PI/4;
-	this.speed = speed;
+	this.speed = speed;//请最快速度每次也不要走超出一个弹球直径的距离
 }
 Ball.prototype = {//弹球原型
 	constructor : Ball,
@@ -93,25 +93,25 @@ var isCollisionWithBlock = function(ball,block){//砖块碰撞判定
 	var by = block.y;
 	var bh = block.h;
 	var bw = block.w;
-	if ((x-r >= bx && x-r <= bx+bw) && (y <= by+bh && y >= by)){
+	if (((x-r >= bx && x-r <= bx+bw) && (y <= by+bh && y >= by)) && x+r >= bx+bw){
 		return {
 			isCol : true,
 			dir : "left"
 		}
 	}
-	if else ((y-r >= by && y-r <= by+bh) && (x >= bx && x <= bx+bw)){
+	if else (((y-r >= by && y-r <= by+bh) && (x >= bx && x <= bx+bw)) && y+r >= by+bh){
 		return {
 			isCol : true,
 			dir : "top"
 		}
 	}
-	if else ((x+r >= bx && x+r <= bx+bw) && (y >= by && y <= by+bh)){
+	if else (((x+r >= bx && x+r <= bx+bw) && (y >= by && y <= by+bh)) && x-r <= bx){
 		return {
 			isCol : true,
 			dir : "right"
 		}
 	}
-	if else ((y+r >= by && y+r <= by+bh) && (x >= bx && x <= bx+bw)){
+	if else (((y+r >= by && y+r <= by+bh) && (x >= bx && x <= bx+bw)) && y-r <= by){
 		return {
 			isCol : true,
 			dir : "bottom"
@@ -163,17 +163,73 @@ var isDead = function(ball,screenHeight){
 		return false
 	}
 }
-var boardCrashBall = function(board,ball){//当木板碰上球
-	if (ball.angle >= Math.PI && ball.angle <= Math.PI/2 * 3){
-		ball.angle = ball.angle - Math.PI
-	}
-	else if (ball.angle >= Math.PI/2 * 3 && ball.angle <= Math.PI * 2){
-		ball.angle = Math.PI * 2 - ball.angle
+var ballCrashBoard = function(board,ball,fun){//当木板碰上球
+	if (fun()){
+		if (ball.angle >= Math.PI && ball.angle <= Math.PI/2 * 3){
+			ball.angle = ball.angle - Math.PI
+		}
+		else if (ball.angle >= Math.PI/2 * 3 && ball.angle <= Math.PI * 2){
+			ball.angle = Math.PI * 2 - ball.angle
+		}
+		else {
+			console.error("wrong angle")
+		}
+		ball.angle = ball.angle - Math.PI/360 * board.inertia
 	}
 	else {
-		console.log("wrong angle")
+		return
 	}
-	ball.angle = ball.angle - Math.PI/360 * board.inertia
+}
+var ballCrashBlock = function(block,ball,fun){//当球撞上砖块
+	var iscol = fun();
+	if (isCol.isCol){
+		switch (isCol.dir){
+			case "left" : {
+				if (ball.angle > Math.PI && ball.angle < Math.PI/2 * 3){
+					ball.angle = Math.PI * 3 - ball.angle
+				}
+				else if (ball.angle > Math.PI/2 && ball.angle < Math.PI){
+					ball.angle = Math.PI * Math.PI - ball.angle
+				}
+				else {
+					console.error("dir is not left")
+				}
+			}
+			case "right" : {
+				if (ball.angle > Math.PI/2 && ball.angle < Math.PI){
+					ball.angle = Math.PI * 3 - ball.angle
+				}
+				else if (ball.angle > 0 && ball.angle < Math.PI/2){
+					ball.angle = Math.PI - ball.angle
+				}
+				else {
+					console.error("dir is not right")
+				}
+			}
+			case "top" : {
+				if (ball.angle > Math.PI/2 *3 && ball.angle < Math.PI/2){
+					ball.angle = Math.PI * 2 - ball.angle
+				}
+				else {
+					console.error("dir is not top")
+				}
+			}
+			case "bottom" : {
+				if (ball.angle > Math.PI/2 && ball.angle < Math.PI/2 *3){
+					ball.angle = Math.PI * 2 - ball.angle
+				}
+				else {
+					console.error("dir is not bottom")
+				}
+			}
+		}
+		//清除砖块
+		//删除砖块
+		//删除数组砖块
+	}
+	else {
+		return
+	}
 }
 var blockGroup = [];
 var ctx = $("#c").getContext('2d');
