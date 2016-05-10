@@ -1,4 +1,4 @@
-var Board = function(x,y,length,thick){//木板构造函数
+﻿var Board = function(x,y,length,thick){//木板构造函数
 	this.x = x;
 	this.y = y;
 	this.length = length;
@@ -49,25 +49,25 @@ Ball.prototype = {//弹球原型
 			this.x = this.x + speed;
 			this.y = Math.tan(this.angle) * this.x
 		}
-		if else ((this.angle > Math.PI/4 && this.angle <= Math.PI/4 *3) && this.angle !== Math.PI/2){
+		else if ((this.angle > Math.PI/4 && this.angle <= Math.PI/4 *3) && this.angle !== Math.PI/2){
 			this.y = this.y + speed;
 			this.x = this.y/Math.tan(this.angle)
 		}
-		if else ((this.angle > Math.PI/4 * 3 && this.angle <= Math.PI/4 * 5) && this.angle !== Math.PI){
+		else if ((this.angle > Math.PI/4 * 3 && this.angle <= Math.PI/4 * 5) && this.angle !== Math.PI){
 			this.x = this.x - speed;
 			this.y = Math.tan(this.angle) * this.x
 		}
-		if else ((this.angle > Math.PI/4 * 5 && this.angle <= Math.PI/4 * 7) && this.angle !== Math.PI/2 * 3){
+		else if ((this.angle > Math.PI/4 * 5 && this.angle <= Math.PI/4 * 7) && this.angle !== Math.PI/2 * 3){
 			this.y = this.y - speed;
 			this.x = this.y/Math.tan(this.angle)
 		}
-		if else (this.angle === Math.PI/2){
+		else if (this.angle === Math.PI/2){
 			this.y = this.y + speed
 		}
-		if else (this.angle === Math.PI/2 * 3){
+		else if (this.angle === Math.PI/2 * 3){
 			this.y = this.y - speed
 		}
-		if else (this.angle === Math.PI){
+		else if (this.angle === Math.PI){
 			this.x = x - speed
 		}
 		else {
@@ -99,19 +99,19 @@ var isCollisionWithBlock = function(ball,block){//砖块碰撞判定
 			dir : "left"
 		}
 	}
-	if else (((y-r >= by && y-r <= by+bh) && (x >= bx && x <= bx+bw)) && y+r >= by+bh){
+	else if (((y-r >= by && y-r <= by+bh) && (x >= bx && x <= bx+bw)) && y+r >= by+bh){
 		return {
 			isCol : true,
 			dir : "top"
 		}
 	}
-	if else (((x+r >= bx && x+r <= bx+bw) && (y >= by && y <= by+bh)) && x-r <= bx){
+	else if (((x+r >= bx && x+r <= bx+bw) && (y >= by && y <= by+bh)) && x-r <= bx){
 		return {
 			isCol : true,
 			dir : "right"
 		}
 	}
-	if else (((y+r >= by && y+r <= by+bh) && (x >= bx && x <= bx+bw)) && y-r <= by){
+	else if (((y+r >= by && y+r <= by+bh) && (x >= bx && x <= bx+bw)) && y-r <= by){
 		return {
 			isCol : true,
 			dir : "bottom"
@@ -139,13 +139,13 @@ var isCollisionWithWall = function(ball,screenWidth){
 			dir : "left"
 		}
 	}
-	if else (y-r <= 0){
+	else if (y-r <= 0){
 		return {
 			isCol : true,
 			dir : "top"
 		}
 	}
-	if else (x+r >= screenWidth){
+	else if (x+r >= screenWidth){
 		return {
 			isCol : true,
 			dir : "right"
@@ -164,7 +164,7 @@ var isDead = function(ball,screenHeight){
 	}
 }
 var ballCrashBoard = function(board,ball,fun){//当木板碰上球
-	if (fun()){
+	if (fun(ball,board)){
 		if (ball.angle >= Math.PI && ball.angle <= Math.PI/2 * 3){
 			ball.angle = ball.angle - Math.PI
 		}
@@ -174,14 +174,15 @@ var ballCrashBoard = function(board,ball,fun){//当木板碰上球
 		else {
 			console.error("wrong angle")
 		}
-		ball.angle = ball.angle - Math.PI/360 * board.inertia
+		ball.angle = ball.angle - Math.PI/360 * board.inertia;
+		return
 	}
 	else {
 		return
 	}
 }
 var ballCrashBlock = function(block,ball,fun){//当球撞上砖块
-	var iscol = fun();
+	var isCol = fun(ball,block);
 	if (isCol.isCol){
 		switch (isCol.dir){
 			case "left" : {
@@ -223,20 +224,57 @@ var ballCrashBlock = function(block,ball,fun){//当球撞上砖块
 				}
 			}
 		}
-		//清除砖块
-		//删除砖块
-		//删除数组砖块
+		return true
+	}
+	else {
+		return false
+	}
+}
+var ballCrashWall = function(ball,screenWidth,fun){
+	var isCol = fun(ball,screenWidth);
+	if (isCol.isCol){
+		switch (isCol.dir){
+			case "left" : {
+				if (ball.angle > Math.PI && ball.angle < Math.PI/2 * 3){
+					ball.angle = Math.PI * 3 - ball.angle
+				}
+				else if (ball.angle > Math.PI/2 && ball.angle < Math.PI){
+					ball.angle = Math.PI * Math.PI - ball.angle
+				}
+				else {
+					console.error("dir is not left at wall")
+				}
+			}
+			case "right" : {
+				if (ball.angle > Math.PI/2 && ball.angle < Math.PI){
+					ball.angle = Math.PI * 3 - ball.angle
+				}
+				else if (ball.angle > 0 && ball.angle < Math.PI/2){
+					ball.angle = Math.PI - ball.angle
+				}
+				else {
+					console.error("dir is not right at wall")
+				}
+			}
+			case "top" : {
+				if (ball.angle > Math.PI/2 && ball.angle < Math.PI/2 *3){
+					ball.angle = Math.PI * 2 - ball.angle
+				}
+				else {
+					console.error("dir is not top at wall")
+				}
+			}
+		}
 	}
 	else {
 		return
 	}
 }
-var blockGroup = [];
-var ctx = $("#c").getContext('2d');
+var ctx = document.getElementById("c").getContext('2d');
 var drawBall = function(ball){//绘制弹球
 	ctx.beginPath();
 	ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);
-	ctx.full()
+	ctx.fill()
 }
 var clearBall = function(ball){//清除球
 	ctx.clearRect(ball.x-ball.r,ball.y-ball.r,r*2+1,r*2+1)
@@ -249,7 +287,64 @@ var clearBoard = function(board){//清除木板
 }
 var drawBlock = function(block){//绘制砖块
 	ctx.fillRect(block.x,block.y,block.w,block.h)
+	ctx.clearRect(block.x+5,block.y+5,block.w-10,block.h-10)
 }
 var clearBlock = function(block){//清除砖块
 	clearRect(block.x,block.y,block.w,block.h)
 }
+var gameOver = function(){
+	ctx.fillStyle = "#b3b3b3";
+	ctx.font = "70px 黑体";
+	ctx.fillText("game over",170,330);
+}
+var blockBreaker = (function(){
+	var score = 0;
+	var screenWidth = 630;
+	var screenHeight = 630;
+	var board = new Board(285,620,60,10);
+	drawBoard(board);
+	var ball = new Ball(315,615,5,1);
+	drawBall(ball);
+	var blockGroup = [];
+	var mainNum;
+	var boardMoveNum;
+	for (var i = 1;i <= 10;i++){
+		for (var j = 1;j <= 9;j++){
+			blockGroup[i*j-1] = new Block((i-1)*70,(j-1)*30,70,30,1);
+			drawBlock(blockGroup[i*j-1])
+		}
+	}
+	return {
+		main : function(){
+			clearBall(ball);
+			if (isDead(ball,screenHeight)){
+				blockBreaker.dead();
+				return
+			}
+			ballCrashBoard(board,ball,isCollisionWithBorad);
+			ballCrashWall(board,screenWidth,isCollisionWithWall);
+			for (var i = 0;i < blockGroup.length;i++){
+				if (ballCrashBlock(ball,blockGroup[i],isCollisionWithBlock)){
+					clearBlock(blockGroup[i]);
+					blockGroup[i] = null;
+					blockGroup.splice(i,1)
+				}
+			}
+			ball.move();
+			clearBoard(board);
+			drawBoard(board);
+			drawBall(ball)
+		},
+		begin : function(dir){
+			if (dir = "left"){
+				ball.angle = Math.PI/4 * 3
+			}
+			mainNum = setInterval(main,170);
+		},
+		dead : function(){
+			clearInterval(mainNum);
+			gameOver();
+			//键盘解绑
+		}
+	}
+}())
