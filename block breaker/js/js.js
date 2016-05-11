@@ -11,7 +11,7 @@ Board.prototype = {//木板原型
 		switch (dir){
 			case "left" : {
 				if (this.x >= 5){
-					this.x -= 5;
+					this.x -= 2;
 					this.inertia--
 				}
 				else {
@@ -21,7 +21,7 @@ Board.prototype = {//木板原型
 			}
 			case "right" : {
 				if (this.x <= screenWidth-this.length-5){
-					this.x += 5;
+					this.x += 2;
 					this.inertia++
 				}
 				else {
@@ -33,6 +33,9 @@ Board.prototype = {//木板原型
 				return
 			}
 		}
+	},
+	stop : function(){
+		this.inertia = 0;
 	}
 }
 var Ball = function(x,y,r,speed){//弹球构造函数
@@ -195,6 +198,7 @@ var ballCrashBlock = function(block,ball,fun){//当球撞上砖块
 				else {
 					console.error("dir is not left")
 				}
+				break
 			}
 			case "right" : {
 				if (ball.angle > Math.PI/2 && ball.angle < Math.PI){
@@ -206,6 +210,7 @@ var ballCrashBlock = function(block,ball,fun){//当球撞上砖块
 				else {
 					console.error("dir is not right")
 				}
+				break
 			}
 			case "top" : {
 				if (ball.angle > Math.PI/2 *3 && ball.angle < Math.PI/2){
@@ -214,6 +219,7 @@ var ballCrashBlock = function(block,ball,fun){//当球撞上砖块
 				else {
 					console.error("dir is not top")
 				}
+				break
 			}
 			case "bottom" : {
 				if (ball.angle > Math.PI/2 && ball.angle < Math.PI/2 *3){
@@ -222,6 +228,7 @@ var ballCrashBlock = function(block,ball,fun){//当球撞上砖块
 				else {
 					console.error("dir is not bottom")
 				}
+				break
 			}
 		}
 		return true
@@ -244,6 +251,7 @@ var ballCrashWall = function(ball,screenWidth,fun){
 				else {
 					console.error("dir is not left at wall")
 				}
+				break
 			}
 			case "right" : {
 				if (ball.angle > Math.PI/2 && ball.angle < Math.PI){
@@ -255,6 +263,7 @@ var ballCrashWall = function(ball,screenWidth,fun){
 				else {
 					console.error("dir is not right at wall")
 				}
+				break
 			}
 			case "top" : {
 				if (ball.angle > Math.PI/2 && ball.angle < Math.PI/2 *3){
@@ -263,6 +272,7 @@ var ballCrashWall = function(ball,screenWidth,fun){
 				else {
 					console.error("dir is not top at wall")
 				}
+				break
 			}
 		}
 	}
@@ -308,6 +318,10 @@ var blockBreaker = (function(){
 	var blockGroup = [];
 	var mainNum;
 	var boardMoveNum;
+	var mainTime = {
+		max : 0,
+		min : 99999
+	}
 	for (var i = 1;i <= 10;i++){
 		for (var j = 1;j <= 9;j++){
 			blockGroup[i*j-1] = new Block((i-1)*70,(j-1)*30,70,30,1);
@@ -316,6 +330,8 @@ var blockBreaker = (function(){
 	}
 	return {
 		main : function(){
+			var aTime,bTime,cTime;
+			aTime = Date.now();
 			clearBall(ball);
 			if (isDead(ball,screenHeight)){
 				blockBreaker.dead();
@@ -327,24 +343,64 @@ var blockBreaker = (function(){
 				if (ballCrashBlock(ball,blockGroup[i],isCollisionWithBlock)){
 					clearBlock(blockGroup[i]);
 					blockGroup[i] = null;
-					blockGroup.splice(i,1)
+					blockGroup.splice(i,1);
+					score++;
+					document.getElementById("score").textContent = score
 				}
 			}
 			ball.move();
 			clearBoard(board);
 			drawBoard(board);
-			drawBall(ball)
+			drawBall(ball);
+			bTime = Date.now();
+			cTime = bTime - aTime;
+			if (cTime > mainTime.max){
+				mainTime.max = cTime
+			}
+			if (cTime < mainTime.min){
+				mainTime.min = cTime
+			}
+		},
+		getMainTime : function(){
+			console.log(mainTime)
+		},
+		addMove : function(){
+			switch (event.which){
+				case 37 : {
+					blockBreaker.boardMove("left");
+					break
+				}
+				case 39 : {
+					blockBreaker.boardMove("right");
+					break
+				}
+			}
 		},
 		begin : function(dir){
+			body.removeEventListener('keydown',add);
+			body.addEventListener('keydown',blockBreaker.addMove);
+			body.addEventListener('keyup',blockBreaker.boardMoveStop);
 			if (dir = "left"){
 				ball.angle = Math.PI/4 * 3
 			}
-			mainNum = setInterval(main,170);
+			mainNum = setInterval(main,17);
 		},
 		dead : function(){
 			clearInterval(mainNum);
 			gameOver();
-			//键盘解绑
+			body.removeEventListener('keydown',blockBreaker.addMove);
+			body.removeEventListener('keydown',blockBreaker.boardMoveStop)
+		},
+		boardMove : function(dir){
+			board.move(dir,screenWidth)
+		},
+		boardMoveStop : function(){
+			board.stop()
 		}
 	}
-}())
+}());
+var body = document.getElementsByTagName("body")[0];
+var add = function(){
+	event.which = 37 ? blockBreaker.begin('left') : blockBreaker.begin()
+}
+body.addEventListener('keydown',add)
