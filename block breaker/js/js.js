@@ -10,8 +10,8 @@ Board.prototype = {//木板原型
 	move : function(dir,screenWidth){//移动函数
 		switch (dir){
 			case "left" : {
-				if (this.x >= 10){
-					this.x -= 10;
+				if (this.x >= 3){
+					this.x -= 3;
 					this.inertia--
 				}
 				else {
@@ -20,8 +20,8 @@ Board.prototype = {//木板原型
 				break
 			}
 			case "right" : {
-				if (this.x <= screenWidth-this.length-10){
-					this.x += 10;
+				if (this.x <= screenWidth-this.length-3){
+					this.x += 3;
 					this.inertia++
 				}
 				else {
@@ -49,30 +49,9 @@ Ball.prototype = {//弹球原型
 	constructor : Ball,
 	move : function(screenHeight){//canvas坐标系不是这样的,所以加入screenHeight
 		this.y = screenHeight - this.y;
-		if (this.angle <= Math.PI/4 || this.angle > Math.PI/4 * 7){
-			this.x = this.x + this.speed;
-			this.y = Math.tan(this.angle) * this.speed + this.y
-		}
-		else if ((this.angle > Math.PI/4 && this.angle <= Math.PI/4 *3) && this.angle !== Math.PI/2){
-			this.y = this.y + this.speed;
-			this.x = this.speed/Math.tan(this.angle) + this.x
-		}
-		else if ((this.angle > Math.PI/4 * 3 && this.angle <= Math.PI/4 * 5) && this.angle !== Math.PI){
-			this.x = this.x - this.speed;
-			this.y = this.y - Math.tan(this.angle) * this.speed
-		}
-		else if ((this.angle > Math.PI/4 * 5 && this.angle <= Math.PI/4 * 7) && this.angle !== Math.PI/2 * 3){
-			this.y = this.y - this.speed;
-			this.x = this.x - this.speed/Math.tan(this.angle)
-		}
-		else if (this.angle === Math.PI/2){
-			this.y = this.y + this.speed
-		}
-		else if (this.angle === Math.PI/2 * 3){
-			this.y = this.y - this.speed
-		}
-		else if (this.angle === Math.PI){
-			this.x = x - this.speed
+		if (this.angle >= 0 && this.angle <= Math.PI * 2){
+			this.x = this.x + Math.cos(this.angle) * this.speed;
+			this.y = this.y + Math.sin(this.angle) * this.speed
 		}
 		else {
 			console.error("this angle out range" + this.angle)
@@ -128,7 +107,22 @@ var isCollisionWithBlock = function(ball,block){//砖块碰撞判定
 }
 var isCollisionWithBorad = function(ball,board){
 	if (ball.y+ball.r >= board.y && (ball.x >= board.x && ball.x <= board.x+board.length)){
-		return true
+		return {
+			isCol : true,
+			dir : "bottom"
+		}
+	}
+	else if ((ball.x+ball.r >= board.x && ball.x-ball.r <= board.x) && (ball.y >= board.y && ball.y <= board.y+board.thick)){
+		return {
+			isCol : true,
+			dir : "left"
+		}
+	}
+	else if ((ball.x-ball.r <= board.x+board.length && ball.x+ball.r > board.x+board.length) && (ball.y >=board.y && ball.y <= board.y+board.thick)){
+		return {
+			isCol : true,
+			dir : "right"
+		}
 	}
 	else {
 		return false
@@ -169,17 +163,38 @@ var isDead = function(ball,screenHeight){
 	}
 }
 var ballCrashBoard = function(board,ball,fun){//当木板碰上球
-	if (fun(ball,board)){
-		if (ball.angle >= Math.PI && ball.angle <= Math.PI/2 * 3){
-			ball.angle = Math.PI * 2 - ball.angle
+	var isCol = fun(ball,board);
+	if (isCol.isCol){
+		switch (isCol.dir){
+			case "bottom" : {
+				if (ball.angle >= Math.PI && ball.angle <= Math.PI * 2){
+					ball.angle = Math.PI * 2 - ball.angle
+				}
+				else {
+					console.error("dir is not bottom with board" + ball.angle)
+				}
+				break
+			}
+			case "left" : {
+				if (ball.angle >= Math.PI/2 * 3 && ball.angle <= Math.PI * 2){
+					ball.angle = Math.PI * 3 - ball.angle
+				}
+				else{
+					console.error("dir is not left with board" + ball.angle)
+				}
+				break
+			}
+			case "right" : {
+				if (ball.angle >= Math.PI && ball.angle <= Math.PI/2 * 3){
+					ball.angle = Math.PI * 3 - ball.angle
+				}
+				else{
+					console.error("dir is not right with board" + ball.angle)
+				}
+				break
+			}
 		}
-		else if (ball.angle >= Math.PI/2 * 3 && ball.angle <= Math.PI * 2){
-			ball.angle = Math.PI * 2 - ball.angle
-		}
-		else {
-			console.error("wrong angle" + ball.angle);
-		}
-		ball.angle = ball.angle - Math.PI/360 * board.inertia;
+		ball.angle - Math.PI/1080 * board.inertia > 0 && ball.angle - Math.PI/1080 * board.inertia < Math.PI ? ball.angle = ball.angle - Math.PI/1080 * board.inertia : ball.angle = ball.angle
 		return true
 	}
 	else {
@@ -195,10 +210,10 @@ var ballCrashBlock = function(ball,block,fun){//当球撞上砖块
 					ball.angle = Math.PI * 3 - ball.angle
 				}
 				else if (ball.angle > Math.PI/2 && ball.angle < Math.PI){
-					ball.angle = Math.PI * Math.PI - ball.angle
+					ball.angle = Math.PI - ball.angle
 				}
 				else {
-					console.error("dir is not left")
+					console.error("dir is not left" + ball.angle)
 				}
 				break
 			}
@@ -210,7 +225,7 @@ var ballCrashBlock = function(ball,block,fun){//当球撞上砖块
 					ball.angle = Math.PI - ball.angle
 				}
 				else {
-					console.error("dir is not right")
+					console.error("dir is not right" + ball.angle)
 				}
 				break
 			}
@@ -219,7 +234,7 @@ var ballCrashBlock = function(ball,block,fun){//当球撞上砖块
 					ball.angle = Math.PI * 2 - ball.angle
 				}
 				else {
-					console.error("dir is not top")
+					console.error("dir is not top" + ball.angle)
 				}
 				break
 			}
@@ -228,7 +243,7 @@ var ballCrashBlock = function(ball,block,fun){//当球撞上砖块
 					ball.angle = Math.PI * 2 - ball.angle
 				}
 				else {
-					console.error("dir is not bottom")
+					console.error("dir is not bottom" + ball.angle)
 				}
 				break
 			}
@@ -251,7 +266,7 @@ var ballCrashWall = function(ball,screenWidth,fun){
 					ball.angle = Math.PI - ball.angle
 				}
 				else {
-					console.error("dir is not left at wall")
+					console.error("dir is not left at wall" + ball.angle)
 				}
 				break
 			}
@@ -263,7 +278,7 @@ var ballCrashWall = function(ball,screenWidth,fun){
 					ball.angle = Math.PI - ball.angle
 				}
 				else {
-					console.error("dir is not right at wall")
+					console.error("dir is not right at wall" + ball.angle)
 				}
 				break
 			}
@@ -272,7 +287,7 @@ var ballCrashWall = function(ball,screenWidth,fun){
 					ball.angle = Math.PI * 2 - ball.angle
 				}
 				else {
-					console.error("dir is not top at wall")
+					console.error("dir is not top at wall" + ball.angle)
 				}
 				break
 			}
@@ -314,13 +329,13 @@ var blockBreaker = (function(){
 	document.getElementById("score").textContent = score;
 	var screenWidth = 630;
 	var screenHeight = 630;
-	var board = new Board(285,620,60,10);
+	var board = new Board(265,620,100,10);
 	drawBoard(board);
-	var ball = new Ball(315,614,5,2);
+	var ball = new Ball(315,614,5,5);
 	drawBall(ball);
 	var blockGroup = [];
 	var mainNum;
-	var boardMoveNum;
+	var boardMoveStaut;
 	var mainTime = {
 		max : 0,
 		min : 99999
@@ -362,6 +377,12 @@ var blockBreaker = (function(){
 					document.getElementById("score").textContent = score
 				}
 			}
+			if (boardMoveStaut === "left"){
+				blockBreaker.boardMove("left")
+			}
+			if (boardMoveStaut === "right"){
+				blockBreaker.boardMove("right")
+			}
 			blockGroup.forEach(drawBlock);
 			ball.move(screenHeight);
 			drawBoard(board);
@@ -381,11 +402,11 @@ var blockBreaker = (function(){
 		addMove : function(){
 			switch (event.which){
 				case 37 : {
-					blockBreaker.boardMove("left");
+					boardMoveStaut = "left";
 					break
 				}
 				case 39 : {
-					blockBreaker.boardMove("right");
+					boardMoveStaut = "right";
 					break
 				}
 				default : {
@@ -398,7 +419,11 @@ var blockBreaker = (function(){
 			body.addEventListener('keydown',blockBreaker.addMove);
 			body.addEventListener('keyup',blockBreaker.boardMoveStop);
 			if (dir === "left"){
-				ball.angle = Math.PI/4 * 3
+				ball.angle = Math.PI/4 * 3;
+				boardMoveStaut = "left";
+			}
+			else {
+				boardMoveStaut = "right";
 			}
 			mainNum = setInterval(blockBreaker.main,17);
 		},
@@ -411,11 +436,20 @@ var blockBreaker = (function(){
 		boardMove : function(dir){
 			clearBoard(board);
 			board.move(dir,screenWidth);
-			drawBoard(board)
+			drawBoard(board);
 		},
 		boardMoveStop : function(){
-			if (event.which === 37 || event.which === 39){
-				board.stop()
+			if (event.which === 37){
+				board.stop();
+				if (boardMoveStaut === "left"){
+					boardMoveStaut = undefined;
+				}
+			}
+			else if (event.which === 39){
+				board.stop();
+				if (boardMoveStaut === "right"){
+					boardMoveStaut = undefined;
+				}
 			}
 			else {
 				return
