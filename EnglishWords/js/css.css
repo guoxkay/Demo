@@ -1,0 +1,33 @@
+body {
+	font-size: 18px;
+	font-family: 'arial'
+}
+textarea {
+	height: 50%;
+	width: 90%;
+	font-size: 18px;
+}
+table {
+	margin-top: 50px;
+}
+tbody {
+	display: none
+}
+td {
+	border: 1px solid red;
+	margin: 0;
+	padding: 0;
+	width: 120px;
+	height: 30px;
+	text-align: center;
+	line-height: 30px;
+	float: left;
+	border-left: none;
+}
+tr>td:first-child {
+	border-left: 1px solid red
+}
+p {
+	color: red;
+	display: none;
+}
